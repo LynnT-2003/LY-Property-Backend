@@ -3,18 +3,6 @@ import React, { useState, useEffect } from "react";
 
 const Demo = () => {
   const [properties, setProperties] = useState([]);
-  const [listings, setListings] = useState([]);
-
-  const fetchListings = async () => {
-    try {
-      const response = await fetch("/api/listings");
-      const data = await response.json();
-      console.log(data);
-      setListings(data);
-    } catch (error) {
-      console.log(error);
-    }
-  };
 
   const fetchProperties = async () => {
     try {
@@ -28,12 +16,12 @@ const Demo = () => {
   };
 
   useEffect(() => {
-    fetchListings();
     fetchProperties();
   }, []);
 
   return (
     <div className="pl-12 pt-4">
+      LYPROPERTY
       <div>
         {properties.map((property) => (
           <div key={property._id} className="pt-8">
