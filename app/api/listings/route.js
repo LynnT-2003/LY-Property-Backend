@@ -3,6 +3,24 @@ import listingModel from "../../../models/listingModel";
 import propertyModel from "../../../models/propertyModel";
 import { NextResponse } from "next/server";
 
+function addCorsHeaders(response) {
+  response.headers.set("Access-Control-Allow-Origin", "*");
+  response.headers.set(
+    "Access-Control-Allow-Methods",
+    "GET, POST, PUT, DELETE"
+  );
+  response.headers.set(
+    "Access-Control-Allow-Headers",
+    "Content-Type, Authorization"
+  );
+  return response;
+}
+
+export async function OPTIONS() {
+  const response = NextResponse.json(null, { status: 204 }); // No content
+  return addCorsHeaders(response);
+}
+
 export async function POST(req) {
   try {
     const body = await req.json();
@@ -21,10 +39,12 @@ export async function POST(req) {
       { upsert: true, new: true }
     );
     const listing = await listingModel.create(body);
-    return NextResponse.json(
+    const response = NextResponse.json(
       { message: "Listing created successfully", listing },
       { status: 201 }
     );
+    return addCorsHeaders(response);
+    s;
   } catch (error) {
     console.log(error);
     return NextResponse.json(
@@ -53,21 +73,13 @@ export async function GET(req) {
       }
 
       const response = NextResponse.json(listing);
-
-      response.headers.set("Access-Control-Allow-Origin", "*");
-      response.headers.set(
-        "Access-Control-Allow-Methods",
-        "GET, POST, PUT, DELETE"
-      );
-      response.headers.set(
-        "Access-Control-Allow-Headers",
-        "Content-Type, Authorization"
-      );
-      return response;
+      s;
+      return addCorsHeaders(response);
     } else {
       // Fetch all listings
       const listings = await listingModel.find();
-      return NextResponse.json(listings);
+      const response = NextResponse.json(listings);
+      return addCorsHeaders(response);
     }
   } catch (error) {
     console.log(error);
