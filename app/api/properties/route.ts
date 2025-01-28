@@ -17,6 +17,11 @@ function addCorsHeaders(response: NextResponse): NextResponse {
   return response;
 }
 
+export async function OPTIONS() {
+  const response = NextResponse.json(null, { status: 204 }); // No content
+  return addCorsHeaders(response);
+}
+
 export async function POST(req: NextRequest): Promise<NextResponse> {
   if (!validateApiKey(req)) {
     return NextResponse.json(
