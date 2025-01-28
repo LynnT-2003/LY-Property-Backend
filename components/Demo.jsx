@@ -6,12 +6,25 @@ const Demo = () => {
 
   const fetchProperties = async () => {
     try {
-      const response = await fetch("/api/properties");
+      const apiKey = process.env.NEXT_PUBLIC_API_KEY;
+      console.log(apiKey);
+
+      const response = await fetch("/api/properties", {
+        method: "GET",
+        headers: {
+          "x-api-key": apiKey,
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to fetch properties");
+      }
+
       const data = await response.json();
       console.log(data);
       setProperties(data);
     } catch (error) {
-      console.log(error);
+      console.error("Error fetching properties:", error);
     }
   };
 

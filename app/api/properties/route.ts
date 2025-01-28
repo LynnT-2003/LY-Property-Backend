@@ -1,8 +1,10 @@
 import connectMongodb from "../../../lib/mongodb";
 import propertyModel from "../../../models/propertyModel";
+import { validateApiKey } from "@/lib/middleware/validateApiKey";
+import { NextRequest } from "next/server";
 import { NextResponse } from "next/server";
 
-function addCorsHeaders(response) {
+function addCorsHeaders(response: NextResponse): NextResponse {
   response.headers.set("Access-Control-Allow-Origin", "*");
   response.headers.set(
     "Access-Control-Allow-Methods",
@@ -10,12 +12,19 @@ function addCorsHeaders(response) {
   );
   response.headers.set(
     "Access-Control-Allow-Headers",
-    "Content-Type, Authorization"
+    "Content-Type, x-api-key, Authorization"
   );
   return response;
 }
 
-export async function POST(req) {
+export async function POST(req: NextRequest): Promise<NextResponse> {
+  if (!validateApiKey(req)) {
+    return NextResponse.json(
+      { message: "Unauthorized: Invalid API Key" },
+      { status: 401 }
+    );
+  }
+
   try {
     const body = await req.json();
     await connectMongodb();
@@ -36,7 +45,14 @@ export async function POST(req) {
 
 // Fetch all properties
 
-export async function GET(req) {
+export async function GET(req: NextRequest): Promise<NextResponse> {
+  if (!validateApiKey(req)) {
+    return NextResponse.json(
+      { message: "Unauthorized: Invalid API Key" },
+      { status: 401 }
+    );
+  }
+
   try {
     console.log("GET request received, attempting to connect to MongoDB...");
 
