@@ -20,7 +20,17 @@ function addCorsHeaders(response: NextResponse): NextResponse {
 // Handle preflight OPTIONS request
 export async function OPTIONS() {
   const response = NextResponse.json(null, { status: 204 }); // No content
-  return addCorsHeaders(response);
+
+  response.headers.set("Access-Control-Allow-Origin", "*");
+  response.headers.set(
+    "Access-Control-Allow-Methods",
+    "GET, POST, PUT, DELETE"
+  );
+  response.headers.set(
+    "Access-Control-Allow-Headers",
+    "Content-Type, Authorization"
+  );
+  return response;
 }
 
 // Handle POST request (creating a property)
