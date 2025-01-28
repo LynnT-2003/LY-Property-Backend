@@ -1,14 +1,14 @@
+import { NextRequest, NextResponse } from "next/server";
 import connectMongodb from "../../../lib/mongodb";
 import propertyModel from "../../../models/propertyModel";
 import { validateApiKey } from "@/lib/middleware/validateApiKey";
-import { NextRequest } from "next/server";
-import { NextResponse } from "next/server";
 
+// Function to set CORS headers on all responses
 function addCorsHeaders(response: NextResponse): NextResponse {
-  response.headers.set("Access-Control-Allow-Origin", "*");
+  response.headers.set("Access-Control-Allow-Origin", "*"); // Allow all origins, or specify your frontend origin here
   response.headers.set(
     "Access-Control-Allow-Methods",
-    "GET, POST, PUT, DELETE"
+    "GET, POST, PUT, DELETE, OPTIONS"
   );
   response.headers.set(
     "Access-Control-Allow-Headers",
@@ -17,11 +17,13 @@ function addCorsHeaders(response: NextResponse): NextResponse {
   return response;
 }
 
-export async function OPTIONS() {
+// Handle preflight OPTIONS request
+export async function OPTIONS(req: NextRequest): Promise<NextResponse> {
   const response = NextResponse.json(null, { status: 204 }); // No content
-  return addCorsHeaders(response);
+  return addCorsHeaders(response); // Add CORS headers to the OPTIONS response
 }
 
+// Handle POST request (creating a property)
 export async function POST(req: NextRequest): Promise<NextResponse> {
   if (!validateApiKey(req)) {
     return NextResponse.json(
@@ -38,7 +40,7 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
       { message: "Property created successfully", listing },
       { status: 201 }
     );
-    return addCorsHeaders(response);
+    return addCorsHeaders(response); // Ensure CORS headers are added
   } catch (error) {
     console.log(error);
     return NextResponse.json(
@@ -48,8 +50,7 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
   }
 }
 
-// Fetch all properties
-
+// Handle GET request (fetching all properties)
 export async function GET(req: NextRequest): Promise<NextResponse> {
   if (!validateApiKey(req)) {
     return NextResponse.json(
@@ -60,7 +61,6 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
 
   try {
     console.log("GET request received, attempting to connect to MongoDB...");
-
     await connectMongodb();
     console.log("MongoDB connection established.");
 
@@ -69,7 +69,7 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
     console.log(`Found ${properties.length} properties.`);
 
     const response = NextResponse.json(properties);
-    return addCorsHeaders(response);
+    return addCorsHeaders(response); // Ensure CORS headers are added
   } catch (error) {
     console.log("Error occurred during GET request:", error);
     return NextResponse.json(
