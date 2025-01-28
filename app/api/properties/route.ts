@@ -69,7 +69,19 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
     console.log(`Found ${properties.length} properties.`);
 
     const response = NextResponse.json(properties);
-    return addCorsHeaders(response); // Ensure CORS headers are added
+
+    // Add the CORS headers
+    response.headers.set("Access-Control-Allow-Origin", "*"); // Allow all origins
+    response.headers.set(
+      "Access-Control-Allow-Methods",
+      "GET, POST, PUT, DELETE"
+    ); // Allow methods
+    response.headers.set(
+      "Access-Control-Allow-Headers",
+      "Content-Type, x-api-key, Authorization"
+    ); // Allow headers
+
+    return response; // Return the response with the CORS headers
   } catch (error) {
     console.log("Error occurred during GET request:", error);
     return NextResponse.json(
