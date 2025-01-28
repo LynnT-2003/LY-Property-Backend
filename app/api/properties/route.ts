@@ -5,22 +5,22 @@ import { validateApiKey } from "@/lib/middleware/validateApiKey";
 
 // Function to set CORS headers on all responses
 function addCorsHeaders(response: NextResponse): NextResponse {
-  response.headers.set("Access-Control-Allow-Origin", "*"); // Allow all origins, or specify your frontend origin here
+  response.headers.set("Access-Control-Allow-Origin", "*");
   response.headers.set(
     "Access-Control-Allow-Methods",
-    "GET, POST, PUT, DELETE, OPTIONS"
+    "GET, POST, PUT, DELETE"
   );
   response.headers.set(
     "Access-Control-Allow-Headers",
-    "Content-Type, x-api-key, Authorization"
+    "Content-Type, Authorization"
   );
   return response;
 }
 
 // Handle preflight OPTIONS request
-export async function OPTIONS(req: NextRequest): Promise<NextResponse> {
+export async function OPTIONS() {
   const response = NextResponse.json(null, { status: 204 }); // No content
-  return addCorsHeaders(response); // Add CORS headers to the OPTIONS response
+  return addCorsHeaders(response);
 }
 
 // Handle POST request (creating a property)
